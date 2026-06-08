@@ -19,8 +19,8 @@ stages {
     stage('Build and Test') {
         steps {
             sh 'ls -ltr'
-            sh 'rm -rf java-maven-sonar-argocd/spring-boot-app/target'
-            sh 'cd java-maven-sonar-argocd/spring-boot-app && mvn clean package'
+            sh 'rm -rf spring-boot-app/target'
+            sh 'cd spring-boot-app && mvn clean package'
         }
     }
 
@@ -32,7 +32,7 @@ stages {
         steps {
             withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
                 sh '''
-                    cd java-maven-sonar-argocd/spring-boot-app
+                    cd spring-boot-app
                     mvn sonar:sonar \
                     -Dsonar.login=$SONAR_AUTH_TOKEN \
                     -Dsonar.host.url=$SONAR_URL
@@ -55,7 +55,7 @@ stages {
 
                     docker build \
                     -t amannprakash/ultimate-cicd:${BUILD_NUMBER} \
-                    java-maven-sonar-argocd/spring-boot-app
+                    ./spring-boot-app
 
                     docker push amannprakash/ultimate-cicd:${BUILD_NUMBER}
                 '''
@@ -77,9 +77,9 @@ stages {
                     git config user.email "amannprakash@gmail.com"
                     git config user.name "amannprakash"
 
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd/spring-boot-app-manifests/deployment.yml
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" spring-boot-app-manifests/deployment.yml
 
-                    git add java-maven-sonar-argocd/spring-boot-app-manifests/deployment.yml
+                    git add spring-boot-app-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}" || true
 
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
@@ -91,4 +91,3 @@ stages {
 ```
 
 }
-
