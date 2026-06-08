@@ -3,6 +3,7 @@ kind: Deployment
 
 metadata:
   name: spring-boot-app
+  namespace: default
   labels:
     app: spring-boot-app
 
@@ -21,7 +22,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-app
-          image: amannprakash/ultimate-cicd:15
+          image: amannprakash/ultimate-cicd:replaceImageTag
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
