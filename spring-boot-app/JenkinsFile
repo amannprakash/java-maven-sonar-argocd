@@ -26,7 +26,7 @@ stages {
 
     stage('Static Code Analysis') {
         environment {
-            SONAR_URL = "http://3.109.143.16:9000"
+            SONAR_URL = 'http://3.109.143.16:9000'
         }
 
         steps {
@@ -65,8 +65,8 @@ stages {
 
     stage('Update Deployment File') {
         environment {
-            GIT_REPO_NAME = "java-maven-sonar-argocd"
-            GIT_USER_NAME = "amannprakash"
+            GIT_REPO_NAME = 'java-maven-sonar-argocd'
+            GIT_USER_NAME = 'amannprakash'
             HOME = "${WORKSPACE}"
         }
 
@@ -80,7 +80,6 @@ stages {
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd/spring-boot-app-manifests/deployment.yml
 
                     git add java-maven-sonar-argocd/spring-boot-app-manifests/deployment.yml
-
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}" || true
 
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
@@ -92,3 +91,4 @@ stages {
 ```
 
 }
+
